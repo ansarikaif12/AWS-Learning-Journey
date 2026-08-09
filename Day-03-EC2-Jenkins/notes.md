@@ -385,7 +385,7 @@ clear	Terminal clean karo
 
 Example:
 
-pwd
+pwd → Present Working Directory
 
 → current location
 
@@ -491,6 +491,477 @@ Aur ek important correction: Ubuntu aur Amazon Linux ke commands 100% same nahi 
 PS C:\Users\acer> = Tumhara Windows
 [ec2-user@... ~]$ = AWS EC2
 
+
+Ab tak ke commands ka logic 🧠
+pwd        → Main kahan hoon?
+ls         → Yahan kya hai?
+mkdir      → Folder banao
+cd         → Folder ke andar jao
+cd ..      → Ek folder bahar jao
+touch      → Empty file banao
+echo >     → File mein likho
+cat        → File padho
+rm         → File delete karo
+clear      → Screen clean karo
+
+
+SSH kya hai?
+
+SSH = Secure Shell
+
+Simple language mein:
+
+SSH ek method hai jisse tum apne laptop se remotely kisi server/EC2 computer mein securely login kar sakte ho.
+
+Tumhara setup:
+
+Tumhara Windows Laptop
+        ↓
+       SSH
+        ↓
+AWS EC2 Virtual Computer
+Tumne ye command use ki thi:
+ssh -i .\aws_login1.pem ec2-user@13.xxx.xxx.xxx
+
+Isko break karo:
+
+ssh
+↓
+EC2 mein remotely login karo
+
+-i .\aws_login1.pem
+↓
+meri private key use karo
+
+ec2-user
+↓
+EC2 ka username
+
+13.xxx.xxx.xxx
+↓
+EC2 ka Public IP
+Iska result kya hua?
+
+Pehle tumhare terminal mein:
+
+PS C:\Users\acer\Downloads>
+
+tha — tum apne laptop par the.
+
+SSH command ke baad:
+
+[ec2-user@ip-172-31-17-200 ~]$
+
+aa gaya — ab tum EC2 ke andar the. 🔥
+
+Ek line mein yaad rakho:
+
+SSH = remotely kisi server/EC2 mein secure login karne ka method. 🔐
+
+Aur Key Pair SSH ke through EC2 mein authentication/login ke liye use hua tha.
+
+SSH aur Key Pair ko confuse mat karna:
+
+SSH       → Login karne ka method
+Key Pair  → Login verify/authenticate karne ki key
+
+
+Tumne ye command chalayi thi:
+
+ssh -i .\aws_login1.pem ubuntu@13.217.198.94
+
+Yahan:
+
+-i .\aws_login1.pem
+
+yehi tumhari key pair ki private key hai. 🔐
+
+Simple breakdown:
+ssh
+ ↓
+EC2 se connect/login karna
+
+-i .\aws_login1.pem
+ ↓
+EC2 ko prove karna ki mere paas authorized private key hai
+
+ubuntu
+ ↓
+EC2 ka username
+
+13.217.198.94
+ ↓
+EC2 ka public IP
+
+Isliye tumhe AWS console mein key pair select karna pada tha → AWS ne tumhe .pem file di → tumne us file ko Downloads mein rakha → SSH command mein -i ke saath us file ko diya.
+
+Ekdum simple flow:
+EC2 Launch
+   ↓
+Key Pair select
+   ↓
+aws_login1.pem mila
+   ↓
+Windows Downloads mein rakha
+   ↓
+ssh -i aws_login1.pem ...
+   ↓
+EC2 mein login ✅
+
+Important: .pem file ko kisi ko share nahi karna, kyunki ye private key hai. 🔐
+
+sudo kya hai?
+
+Simple:
+
+sudo = administrator/root permission ke saath command chalana.
+
+Windows mein jaise kabhi system-level kaam ke liye Administrator permission chahiye hoti hai, Linux mein sudo similar concept hai.
+
+Example
+sudo dnf install jenkins
+
+Iska matlab abhi sirf conceptually:
+
+sudo
+ ↓
+Mujhe admin permission do
+
+dnf
+ ↓
+Software manager
+
+install jenkins
+ ↓
+Jenkins install karo
+
+So:
+
+sudo khud koi software install nahi karta.
+Bas command ko higher permission ke saath chalata hai.
+
+Ek aur example
+sudo systemctl stop jenkins
+
+Matlab:
+
+Admin permission ke saath Jenkins service ko stop karo.
+
+🧠 Yaad rakho
+sudo = "Admin permission ke saath ye command chalao"
+
+Abhi koi command run mat karo. Bas ye concept clear karo.
+
+Next hum dnf samjhenge — kyunki tumne Jenkins install karte waqt sudo dnf install jenkins dekha tha.
+
+Bas ye relation yaad rakho:
+
+sudo
+ ↓
+Admin permission
+
+dnf
+ ↓
+Software/package manager
+
+dnf install jenkins
+ ↓
+Jenkins package install karo
+
+No match
+ ↓
+Configured repositories mein Jenkins nahi mila
+
+
+Jenkins kya hai?
+
+Jenkins ek automation tool hai jo software ke build, test aur deployment ko automatically kar sakta hai.
+
+Maan lo tumne GitHub par apna project upload kiya.
+
+Normally:
+
+Code change
+   ↓
+Khud GitHub se code lao
+   ↓
+Build karo
+   ↓
+Test karo
+   ↓
+EC2 par deploy karo
+
+Ye sab manually karna padega.
+
+Jenkins kya karega?
+Tum Code Push karo
+       ↓
+     GitHub
+       ↓
+    Jenkins 🤖
+       ↓
+     Build
+       ↓
+      Test
+       ↓
+    Deploy
+       ↓
+      EC2
+       ↓
+   🌍 Application Live
+
+Yaani Jenkins baar-baar hone wale deployment ka manual kaam automate karta hai.
+
+Ek real example
+
+Tumne Java project mein ye change kiya:
+
+Hello World
+
+se:
+
+Hello Kaif
+
+Tum GitHub par push karte ho:
+
+git push
+
+Jenkins automatically:
+
+Latest code fetch karega
+Project build karega
+Tests run karega
+Agar sab successful hai → EC2 par deploy karega
+🧠 Ek line mein yaad rakho
+
+EC2 = application chalane wala virtual computer
+Jenkins = application ko automatically build/test/deploy karwane wala automation tool
+
+
+Deployment ka simple meaning
+
+Maan lo tumhare laptop par:
+
+index.html
+
+hai.
+
+Tum chahte ho ki koi bhi browser mein:
+
+http://EC2-PUBLIC-IP
+
+open kare aur tumhari website dikhe.
+
+Toh:
+
+Your Laptop
+    ↓
+   Code
+    ↓
+   EC2
+    ↓
+Web Server
+    ↓
+Browser
+    ↓
+🌍 Website
+
+Ye deployment hai.
+
+Hum abhi kya karenge
+
+Ek simple HTML website ko EC2 par deploy karenge:
+
+Step 1: EC2 launch ✅
+Step 2: SSH se login ✅
+Step 3: Web server install
+Step 4: Website files EC2 par rakhna
+Step 5: Web server start karna
+Step 6: Security Group mein HTTP (port 80) allow karna
+Step 7: Browser mein EC2 Public IP open karna 🎉
+
+
+🚀 Ab Step 3 — Web Server Install
+
+Tum EC2 ke andar ho, prompt kuch aisa hona chahiye:
+
+[ec2-user@ip-172-31-xx-xx ~]$
+
+Run:
+
+sudo dnf install httpd -y
+Iska simple meaning:
+sudo
+↓
+Admin permission
+
+dnf
+↓
+Software install karne ka tool
+
+install
+↓
+Install karo
+
+httpd
+↓
+Apache Web Server
+
+-y
+↓
+Yes automatically
+
+Install hone ke baad check karo:
+
+httpd -v
+
+Agar output mein Apache version aa gaya, for example:
+
+Server version: Apache/2.4.xx
+
+✅ Step 3 complete.
+
+Abhi bas ye 2 commands chalao:
+
+sudo dnf install httpd -y
+httpd -v
+
+
+Step 4 — Website files EC2 par rakhna 🚀
+
+Ab hum Apache ke website folder mein apni index.html file rakhenge.
+
+Apache ka default folder:
+
+/var/www/html/
+1️⃣ Folder ke andar jao
+cd /var/www/html
+2️⃣ Check karo andar kya hai
+ls
+
+Agar index.html already hai, usko replace kar sakte hain.
+
+3️⃣ Simple website banao
+sudo nano index.html
+
+Isme ye paste karo:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My EC2 Website</title>
+</head>
+<body>
+    <h1>Hello Kaif!</h1>
+    <p>My first website deployed on AWS EC2.</p>
+</body>
+</html>
+
+Save karne ke liye:
+
+Ctrl + O
+Enter
+Ctrl + X
+Concept samjho 👇
+index.html
+     ↓
+/var/www/html/
+     ↓
+Apache
+     ↓
+Port 80
+     ↓
+EC2 Public IP
+     ↓
+Browser 🌍
+
+Step 5 — Web Server Start karo 🚀
+
+Ab httpd install ho chuka hai aur index.html bhi rakh di hai.
+
+1️⃣ Apache start karo
+sudo systemctl start httpd
+2️⃣ Check karo running hai ya nahi
+sudo systemctl status httpd
+
+Agar ye dikhe:
+
+Active: active (running)
+
+✅ Apache chal raha hai.
+
+3️⃣ Optional but useful — EC2 restart hone par Apache automatically start ho
+sudo systemctl enable httpd
+
+Simple meaning:
+
+start
+↓
+Abhi Apache chalao
+
+enable
+↓
+Future mein EC2 restart ho to Apache automatically chale
+Ab tak:
+✅ EC2
+✅ SSH
+✅ Apache install
+✅ index.html
+✅ Apache start
+
+⬜ Security Group → Port 80
+⬜ Browser → Public IP
+
+Step 6 — Security Group mein HTTP Port 80 allow karo 🔥
+
+Ab AWS Console mein jao:
+
+EC2 → Instances → apni EC2 instance select karo
+
+Phir:
+
+Security tab → Security groups → apne Security Group par click
+
+Inbound rules → Edit inbound rules
+
+Add rule:
+
+Field	Value
+Type	HTTP
+Protocol	TCP
+Port	80
+Source	Anywhere-IPv4 (0.0.0.0/0)
+
+Phir Save rules.
+
+Port 80 kyun?
+Browser
+   ↓
+http://EC2-PUBLIC-IP
+   ↓
+Port 80
+   ↓
+Security Group
+   ↓
+Apache
+   ↓
+index.html
+
+Agar Port 80 Security Group mein allowed nahi hai, toh browser se website access nahi hogi.
+
+Ab final Step 7 🎉
+
+Apni EC2 ka Public IPv4 address copy karo aur browser mein:
+
+http://YOUR-PUBLIC-IP
+
+open karo.
+
+Example:
+
+http://13.xxx.xxx.xxx
+
+Agar "Hello Kaif!" wali website aa gayi → 🎉 Tumne successfully EC2 par website deploy kar di!
 ## 1. EC2 (Elastic Compute Cloud)
 
 Amazon EC2 provides virtual servers in the cloud.
