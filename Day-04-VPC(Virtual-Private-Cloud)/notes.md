@@ -564,3 +564,205 @@ Internet → IGW → Public Subnet → Load Balancer → Private Subnet → EC2
 Private EC2 → NAT Gateway → IGW → Internet
 
 Itna VPC ka foundation placement ke liye strong hai. Practical karte waqt ye concepts aur solid ho jayenge.
+
+
+
+Most important takeaway:
+
+Security Group → Instance level → Allow rules → Stateful
+NACL → Subnet level → Allow + Deny → Stateless
+
+
+📒 AWS Day 5 – MCQ Practice Notes
+Q1. Security Group aur NACL mein sabse important difference kya hai?
+
+A) Security Group subnet level par hota hai, NACL instance level par
+B) Security Group instance level par hota hai, NACL subnet level par
+C) Dono subnet level par hote hain
+D) Dono instance level par hote hain
+
+✅ Correct Answer: B
+
+Reason:
+
+Security Group → EC2 instance level
+NACL → Subnet level
+Q2. Security Group Port 8000 ko ALLOW kar raha hai, lekin NACL Port 8000 ko DENY kar raha hai. User kya karega?
+
+A) Access milega
+B) Access nahi milega
+C) Kabhi milega, kabhi nahi
+D) AWS automatically Security Group ko priority dega
+
+✅ Correct Answer: B
+
+Reason:
+NACL subnet level par traffic ko DENY kar raha hai. Security Group mein ALLOW hone ke baad bhi traffic application tak nahi pahunch sakta.
+
+NACL DENY → Traffic blocked
+
+Q3. Security Group mein by default kya hota hai?
+
+A) Inbound allow, Outbound deny
+B) Inbound deny, Outbound allow
+C) Inbound aur Outbound dono deny
+D) Inbound aur Outbound dono allow
+
+✅ Correct Answer: B
+
+Reason:
+Default Security Group mein:
+
+Inbound → Deny
+Outbound → Allow
+
+Required inbound traffic ko explicitly allow karna padta hai.
+
+Q4. NACL mein ye rules hain:
+Rule 100 → Port 8000 → DENY
+Rule 200 → Port 8000 → ALLOW
+
+Port 8000 ki request ka kya hoga?
+
+A) Allow hoga
+B) Deny hoga
+C) Dono rules apply honge
+D) Security Group decide karega
+
+✅ Correct Answer: B
+
+Reason:
+NACL rules lowest rule number se evaluate hote hain.
+
+100 → DENY
+
+Rule 100 par request match ho gayi, isliye rule 200 check nahi hoga.
+
+Lower rule number = Higher priority
+
+Q5. Security Group Stateful aur NACL Stateless kyun kaha jata hai?
+
+A) Security Group automatically return traffic allow karta hai, NACL mein return traffic ke liye separate rule chahiye
+B) NACL automatically return traffic allow karta hai, Security Group mein separate rule chahiye
+C) Dono stateful hain
+D) Dono stateless hain
+
+✅ Correct Answer: A
+
+Reason:
+
+Security Group → Stateful
+
+Agar inbound request allow hai, to uska return traffic automatically allowed hota hai.
+
+NACL → Stateless
+
+Inbound aur outbound traffic ko separately configure karna padta hai.
+
+Q6. Python application Port 8000 par running hai. Security Group mein sirf Port 22 aur Port 80 allowed hain. User Port 8000 access karta hai. Kya hoga?
+
+A) Application open hogi
+B) Connection timeout / access fail hoga
+C) SSH connection fail hoga
+D) NACL automatically Port 8000 allow kar dega
+
+✅ Correct Answer: B
+
+Reason:
+Application Port 8000 par running hai, lekin Security Group Port 8000 ko allow nahi kar raha.
+
+Python App → Port 8000 ✅
+Security Group → Port 8000 ❌
+
+Therefore, traffic block ho jayega.
+
+Q7. NACL aur Security Group dono Port 8000 allow kar rahe hain, Python app bhi Port 8000 par running hai aur EC2 ke paas Public IP bhi hai. Phir bhi application access nahi ho rahi. Sabse pehle kya check karoge?
+
+A) Python application actually Port 8000 par running hai ya nahi
+B) Laptop ka wallpaper
+C) AWS account ka password
+D) VPC ka naam
+
+✅ Correct Answer: A
+
+Reason:
+Agar networking configuration correct hai, to next check karna chahiye ki application/service actually running hai ya nahi.
+
+Example:
+
+python3 -m http.server 8000
+Q8. NACL mein * (star) rule ka kya meaning hota hai?
+
+A) Sabhi traffic ko automatically ALLOW karta hai
+B) Previous rules match na hone par default DENY
+C) Sirf HTTP traffic allow karta hai
+D) Security Group ko bypass karta hai
+
+✅ Correct Answer: B
+
+Reason:
+NACL ke numbered rules pehle check hote hain. Agar traffic kisi rule se match nahi karta, to * rule apply hota hai aur traffic DENY ho jata hai.
+
+NACL * = Default DENY
+
+Q9. Ek EC2 instance private subnet mein hai. User internet se directly EC2 ko access karna chahta hai. Kya reason ho sakta hai?
+
+A) Private subnet ka direct internet route nahi hota
+B) Security Group mein Port 22 allow karne se private EC2 automatically public ho jata hai
+C) Private subnet ka purpose hi direct internet access ko avoid karna hai
+D) A aur C dono
+
+✅ Correct Answer: D
+
+Reason:
+Private subnet resources ko normally direct internet inbound access nahi diya jata.
+
+Internet
+   ↓
+Internet Gateway
+   ↓
+Public Subnet
+   ↓
+Load Balancer
+   ↓
+Private Subnet
+   ↓
+EC2
+
+Sirf Security Group mein Port 22 allow karne se private EC2 public nahi ban jata.
+
+Q10. Ek subnet mein 50 EC2 instances hain. Tum chahte ho ki sabhi 50 instances par Port 8000 block ho jaye, chahe kisi individual EC2 ke Security Group mein Port 8000 allowed ho. Kya use karoge?
+
+A) Security Group on every EC2
+B) NACL on the subnet
+C) Internet Gateway
+D) Route Table
+
+✅ Correct Answer: B
+
+Reason:
+NACL subnet level par apply hota hai.
+
+Agar subnet ke NACL mein:
+
+Port 8000 → DENY
+
+hai, to subnet ke andar ke multiple EC2 instances par ye restriction apply ho sakti hai.
+
+🧠 Day 5 Quick Revision
+Concept	Answer
+Security Group	Instance level
+NACL	Subnet level
+Security Group	Stateful
+NACL	Stateless
+Security Group	Allow rules
+NACL	Allow + Deny
+SG Default Inbound	Deny
+SG Default Outbound	Allow
+NACL Priority	Lowest number first
+NACL *	Default DENY
+SG ALLOW + NACL DENY	❌ Blocked
+Multiple EC2s ko subnet level par control	NACL
+⭐ Interview Trick
+
+Security Group protects the Instance, while NACL protects the Subnet.
