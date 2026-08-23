@@ -548,4 +548,4 @@ Object = File/Data
 
 Versioning = Multiple versions of objects
 
-Storage Class = Cost + Access requirement ke according choose karte hain
+Storage Class = Cost + Access requirement ke according choose karte hain 
